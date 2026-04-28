@@ -2,7 +2,6 @@
 
 import CustomerForm from './components/CustomerForm';
 import CustomerTable from './components/CustomerTable';
-import NewTableAdv from './components/Table/NewTableAdv';
 import { useState } from 'react';
 import './App.css';
 
@@ -17,7 +16,6 @@ function App() {
         
         <CustomerTable key={refresh} onRefreshButtonClicked={() => setRefresh((v) => !v)}/>
       </main>
-        {/* <NewTableAdv /> */}
     </div>
   );
 }

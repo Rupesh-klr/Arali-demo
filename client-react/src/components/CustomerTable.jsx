@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getCustomers, deleteCustomer } from '../services/customerService';
 import { Button, Toast } from './index';
-import NewTableAdv from './Table/NewTableAdv';
 import CustomerTableTemplate from './Table/CustomerTableTemplate';
 
 const customerColumns = [

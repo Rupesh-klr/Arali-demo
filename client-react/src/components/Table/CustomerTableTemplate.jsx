@@ -67,7 +67,6 @@ export default function CustomerTableTemplate({ columns, rows, onDelete, onRefre
     };
     return (
         <div className="overflow-x-auto">
-            <div>{searchValue.key}: {searchValue.value}</div>
             <div className='flex flex-col md:flex-row md:items-center justify-between mb-4'>
 
                 <Button onClick={() => onRefreshButtonClicked()} className="mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
