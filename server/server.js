@@ -12,6 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const originString = process.env.ALLOWED_ORIGIN || 'http://localhost:5173';
 const ALLOWED_ORIGINS = originString.split(',').map(origin => origin.trim());
+console.log(`Allowed Origins: ${ALLOWED_ORIGINS.join(', ')}`);
 const BACKUP_PATH = path.join(__dirname, 'customers-backup.json');
 const LOG_FILE = path.join(__dirname, 'server.log');
 
@@ -29,7 +30,7 @@ if (fs.existsSync(BACKUP_PATH)) {
 // Backup every hour
 setInterval(() => {
   fs.writeFileSync(BACKUP_PATH, JSON.stringify(customers, null, 2));
-}, 60 * 60 * 1000);
+}, 5 * 60 * 1000);
 
 app.use(cors({
   origin: ALLOWED_ORIGINS,
