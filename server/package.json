@@ -12,7 +12,8 @@
     "Customer-Management",
     "express-api",
     "swagger",
-    "socket-io"],
+    "socket-io"
+  ],
   "author": "Rupesh KLR",
   "license": "ISC",
   "dependencies": {
