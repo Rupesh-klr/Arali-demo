@@ -18,7 +18,7 @@ export const CustomEmailHandler = ({
   const [error, setError] = useState("");
   const [isTouched, setIsTouched] = useState(false);
 
-  // Robust RFC 5322 compliant regex for 2026 standards
+  
   const emailRegex = /^(?!\.)(?!.*\.\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,6}$/;
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export const CustomEmailHandler = ({
     const val = e.target.value.trim();
     setEmail(val);
     
-    // Clear error while typing if it becomes valid
+    
     if (error && emailRegex.test(val)) {
       setError("");
     }
@@ -60,7 +60,6 @@ export const CustomEmailHandler = ({
 
   return (
     <div className="flex flex-col w-full  group">
-      {/* Label with dynamic error status */}
       <div className="flex justify-between items-end mb-1.5 px-0.5">
         <label className={`text-sm font-semibold transition-colors ${
           error ? "text-red-500" : "text-gray-700 group-focus-within:text-blue-600"

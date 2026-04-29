@@ -21,21 +21,33 @@ export default function CustomerTable({ onRefreshButtonClicked }) {
   });
   const [searchValue, setSearchValue] = useState({ "key": "global", "value": "" });
   const [filter, setFilter] = useState({ page: 1, limit: 10, sort: 'name', order: 'asc', search: '', filterBy: '' });
-  const [refreshFlag, setRefreshFlag] = useState(false); // New state to trigger refresh
-  // let searchValue = { key: '', value: '' };
+  const [refreshFlag, setRefreshFlag] = useState(false);
+
 
   const fetchCustomers = async () => {
     setLoading(true);
     setError('');
-    try {
-      const data = await getCustomers({ ...filter });
-      setCustomers(data.data);
-      setMeta(prev => ({ ...prev, ...data.meta, sortBy: filter.sort, sortOrder: filter.order }));
-    } catch (err) {
-      setError('Failed to fetch customers');
-    } finally {
-      setLoading(false);
-    }
+    const attemptFetch = async (retriesLeft) => {
+      try {
+        const data = await getCustomers({ ...filter });
+        setCustomers(data.data);
+        setMeta(prev => ({ ...prev, ...data.meta, sortBy: filter.sort, sortOrder: filter.order }));
+        setLoading(false);
+      } catch (err) {
+        if (retriesLeft > 0) {
+          const attemptNumber = 6 - retriesLeft;
+          Toast.warn(`Backend is waking up... Retrying (Attempt ${attemptNumber}/5)`);
+          setTimeout(() => {
+            attemptFetch(retriesLeft - 1);
+          }, 30000);
+        } else {
+          setLoading(false);
+          setError('Backend failed to respond after 5 attempts.');
+          Toast.error("backend failed: connection timed out");
+        }
+      }
+    };
+    await attemptFetch(5);
   };
 
   useEffect(() => {
@@ -66,13 +78,13 @@ export default function CustomerTable({ onRefreshButtonClicked }) {
       ...prev,
       search: searchValue.value,
       filterBy: searchValue.key,
-      page: 1, // Optionally reset page on filter
+      page: 1,
     }));
   };
 
   const handleRowsPerPageChange = (newValue, currentpage, sortBy, sortOrder) => {
     const newLimit = parseInt(newValue);
-    if( newLimit === null || currentpage === null || sortBy?.length > 0 || sortOrder?.length > 0) {
+    if (newLimit === null || currentpage === null || sortBy?.length > 0 || sortOrder?.length > 0) {
       setFilter(prev => ({
         ...prev,
         sort: sortBy || prev.sort,
@@ -89,7 +101,7 @@ export default function CustomerTable({ onRefreshButtonClicked }) {
         Toast.success(`Page changed to ${currentpage}`);
       }
       return;
-    } 
+    }
     if (meta.limit !== newLimit) {
       setFilter(prev => ({
         ...prev,

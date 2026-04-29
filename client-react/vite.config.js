@@ -10,7 +10,7 @@ export default defineConfig({
   ],
   server: {
     port: Number(process.env.PORT) || 5173,
-    strictPort: false, // allow fallback to next available port
+    strictPort: false, 
   },
   build: {
     rollupOptions: {
@@ -18,7 +18,7 @@ export default defineConfig({
         manualChunks: undefined,
       },
     },
-    chunkSizeWarningLimit: 500, // 500kb
+    chunkSizeWarningLimit: 500, 
     assetsInlineLimit: 0,
   },
 });

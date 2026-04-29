@@ -1,90 +1,90 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
-import { parsePhoneNumberFromString  } from 'libphonenumber-js';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 export const countriesCode = [
-  { code: "+1", flag: "🇺🇸", name: "United States" , maxSize: 10 },
-  { code: "+7", flag: "🇷🇺", name: "Russia" , maxSize: 10 },
-  { code: "+20", flag: "🇪🇬", name: "Egypt" , maxSize: 10 },
-  { code: "+27", flag: "🇿🇦", name: "South Africa" , maxSize: 10 },
-  { code: "+30", flag: "🇬🇷", name: "Greece" , maxSize: 10 },
-  { code: "+31", flag: "🇳🇱", name: "Netherlands" , maxSize: 10 },
-  { code: "+32", flag: "🇧🇪", name: "Belgium" , maxSize: 10 },
-  { code: "+33", flag: "🇫🇷", name: "France" , maxSize: 10 },
-  { code: "+34", flag: "🇪🇸", name: "Spain" , maxSize: 10 },
-  { code: "+36", flag: "🇭🇺", name: "Hungary" , maxSize: 10 },
-  { code: "+39", flag: "🇮🇹", name: "Italy" , maxSize: 10 },
-  { code: "+40", flag: "🇷🇴", name: "Romania" , maxSize: 10 },
-  { code: "+41", flag: "🇨🇭", name: "Switzerland" , maxSize: 10 },
-  { code: "+43", flag: "🇦🇹", name: "Austria" , maxSize: 10 },
-  { code: "+44", flag: "🇬🇧", name: "United Kingdom" , maxSize: 10 },
-  { code: "+45", flag: "🇩🇰", name: "Denmark" , maxSize: 10 },
-  { code: "+46", flag: "🇸🇪", name: "Sweden" , maxSize: 10 },
-  { code: "+47", flag: "🇳🇴", name: "Norway" , maxSize: 10 },
-  { code: "+48", flag: "🇵🇱", name: "Poland" , maxSize: 10 },
-  { code: "+49", flag: "🇩🇪", name: "Germany" , maxSize: 10 },
-  { code: "+51", flag: "🇵🇪", name: "Peru" , maxSize: 10 },
-  { code: "+52", flag: "🇲🇽", name: "Mexico" , maxSize: 10 },
-  { code: "+53", flag: "🇨🇺", name: "Cuba" , maxSize: 10 },
-  { code: "+54", flag: "🇦🇷", name: "Argentina" , maxSize: 10 },
-  { code: "+55", flag: "🇧🇷", name: "Brazil" , maxSize: 10 },
-  { code: "+56", flag: "🇨🇱", name: "Chile" , maxSize: 10 },
-  { code: "+57", flag: "🇨🇴", name: "Colombia" , maxSize: 10 },
-  { code: "+58", flag: "🇻🇪", name: "Venezuela" , maxSize: 10 },
-  { code: "+60", flag: "🇲🇾", name: "Malaysia" , maxSize: 10 },
-  { code: "+61", flag: "🇦🇺", name: "Australia" , maxSize: 10 },
-  { code: "+62", flag: "🇮🇩", name: "Indonesia" , maxSize: 10 },
-  { code: "+63", flag: "🇵🇭", name: "Philippines" , maxSize: 10 },
-  { code: "+64", flag: "🇳🇿", name: "New Zealand" , maxSize: 10 },
-  { code: "+65", flag: "🇸🇬", name: "Singapore" , maxSize: 10 },
-  { code: "+66", flag: "🇹🇭", name: "Thailand" , maxSize: 10 },
-  { code: "+81", flag: "🇯🇵", name: "Japan" , maxSize: 10 },
-  { code: "+82", flag: "🇰🇷", name: "South Korea" , maxSize: 10 },
-  { code: "+84", flag: "🇻🇳", name: "Vietnam" , maxSize: 10 },
-  { code: "+86", flag: "🇨🇳", name: "China" , maxSize: 10 },
-  { code: "+90", flag: "🇹🇷", name: "Turkey" , maxSize: 10 },
-  { code: "+91", flag: "🇮🇳", name: "India" , maxSize: 10 },
-  { code: "+92", flag: "🇵🇰", name: "Pakistan" , maxSize: 10 },
-  { code: "+93", flag: "🇦🇫", name: "Afghanistan" , maxSize: 10 },
-  { code: "+94", flag: "🇱🇰", name: "Sri Lanka" , maxSize: 10 },
-  { code: "+95", flag: "🇲🇲", name: "Myanmar" , maxSize: 10 },
-  { code: "+98", flag: "🇮🇷", name: "Iran" , maxSize: 10 },
-  { code: "+211", flag: "🇸🇸", name: "South Sudan" , maxSize: 10 },
-  { code: "+212", flag: "🇲🇦", name: "Morocco" , maxSize: 10 },
-  { code: "+213", flag: "🇩🇿", name: "Algeria" , maxSize: 10 },
-  { code: "+216", flag: "🇹🇳", name: "Tunisia" , maxSize: 10 },
-  { code: "+218", flag: "🇱🇾", name: "Libya" , maxSize: 10 },
-  { code: "+220", flag: "🇬🇲", name: "Gambia" , maxSize: 10 },
-  { code: "+221", flag: "🇸🇳", name: "Senegal" , maxSize: 10 },
-  { code: "+222", flag: "🇲🇷", name: "Mauritania" , maxSize: 10 },
-  { code: "+223", flag: "🇲🇱", name: "Mali" , maxSize: 10 },
-  { code: "+225", flag: "🇨🇮", name: "Ivory Coast" , maxSize: 10 },
-  { code: "+230", flag: "🇲🇺", name: "Mauritius" , maxSize: 10 },
-  { code: "+233", flag: "🇬🇭", name: "Ghana" , maxSize: 10 },
-  { code: "+234", flag: "🇳🇬", name: "Nigeria" , maxSize: 10 },
-  { code: "+235", flag: "🇹🇩", name: "Chad" , maxSize: 10 },
-  { code: "+237", flag: "🇨🇲", name: "Cameroon" , maxSize: 10 },
-  { code: "+240", flag: "🇬🇶", name: "Equatorial Guinea" , maxSize: 10 },
-  { code: "+254", flag: "🇰🇪", name: "Kenya" , maxSize: 10 },
-  { code: "+255", flag: "🇹🇿", name: "Tanzania" , maxSize: 10 },
-  { code: "+256", flag: "🇺🇬", name: "Uganda" , maxSize: 10 },
-  { code: "+260", flag: "🇿🇲", name: "Zambia" , maxSize: 10 },
-  { code: "+263", flag: "🇿🇼", name: "Zimbabwe" , maxSize: 10 },
-  { code: "+268", flag: "🇸🇿", name: "Eswatini" , maxSize: 10 },
-  { code: "+290", flag: "🇸🇭", name: "Saint Helena" , maxSize: 10 },
-  { code: "+375", flag: "🇧🇾", name: "Belarus" , maxSize: 10 },
-  { code: "+420", flag: "🇨🇿", name: "Czech Republic" , maxSize: 10 },
-  { code: "+421", flag: "🇸🇰", name: "Slovakia" , maxSize: 10 },
-  { code: "+423", flag: "🇱🇮", name: "Liechtenstein" , maxSize: 10 },
-  { code: "+500", flag: "🇫🇰", name: "Falkland Islands" , maxSize: 10 },
-  { code: "+501", flag: "🇧🇿", name: "Belize" , maxSize: 10 },
-  { code: "+502", flag: "🇬🇹", name: "Guatemala" , maxSize: 10 },
-  { code: "+503", flag: "🇸🇻", name: "El Salvador" , maxSize: 10 },
-  { code: "+504", flag: "🇭🇳", name: "Honduras" , maxSize: 10 },
-  { code: "+505", flag: "🇳🇮", name: "Nicaragua" , maxSize: 10 },
-  { code: "+506", flag: "🇨🇷", name: "Costa Rica" , maxSize: 10 },
-  { code: "+507", flag: "🇵🇦", name: "Panama" , maxSize: 10 },
-  { code: "+509", flag: "🇭🇹", name: "Haiti" , maxSize: 10 },
-  { code: "+598", flag: "🇺🇾", name: "Uruguay" , maxSize: 10 },
+  { code: "+1", flag: "🇺🇸", name: "United States", maxSize: 10 },
+  { code: "+7", flag: "🇷🇺", name: "Russia", maxSize: 10 },
+  { code: "+20", flag: "🇪🇬", name: "Egypt", maxSize: 10 },
+  { code: "+27", flag: "🇿🇦", name: "South Africa", maxSize: 10 },
+  { code: "+30", flag: "🇬🇷", name: "Greece", maxSize: 10 },
+  { code: "+31", flag: "🇳🇱", name: "Netherlands", maxSize: 10 },
+  { code: "+32", flag: "🇧🇪", name: "Belgium", maxSize: 10 },
+  { code: "+33", flag: "🇫🇷", name: "France", maxSize: 10 },
+  { code: "+34", flag: "🇪🇸", name: "Spain", maxSize: 10 },
+  { code: "+36", flag: "🇭🇺", name: "Hungary", maxSize: 10 },
+  { code: "+39", flag: "🇮🇹", name: "Italy", maxSize: 10 },
+  { code: "+40", flag: "🇷🇴", name: "Romania", maxSize: 10 },
+  { code: "+41", flag: "🇨🇭", name: "Switzerland", maxSize: 10 },
+  { code: "+43", flag: "🇦🇹", name: "Austria", maxSize: 10 },
+  { code: "+44", flag: "🇬🇧", name: "United Kingdom", maxSize: 10 },
+  { code: "+45", flag: "🇩🇰", name: "Denmark", maxSize: 10 },
+  { code: "+46", flag: "🇸🇪", name: "Sweden", maxSize: 10 },
+  { code: "+47", flag: "🇳🇴", name: "Norway", maxSize: 10 },
+  { code: "+48", flag: "🇵🇱", name: "Poland", maxSize: 10 },
+  { code: "+49", flag: "🇩🇪", name: "Germany", maxSize: 10 },
+  { code: "+51", flag: "🇵🇪", name: "Peru", maxSize: 10 },
+  { code: "+52", flag: "🇲🇽", name: "Mexico", maxSize: 10 },
+  { code: "+53", flag: "🇨🇺", name: "Cuba", maxSize: 10 },
+  { code: "+54", flag: "🇦🇷", name: "Argentina", maxSize: 10 },
+  { code: "+55", flag: "🇧🇷", name: "Brazil", maxSize: 10 },
+  { code: "+56", flag: "🇨🇱", name: "Chile", maxSize: 10 },
+  { code: "+57", flag: "🇨🇴", name: "Colombia", maxSize: 10 },
+  { code: "+58", flag: "🇻🇪", name: "Venezuela", maxSize: 10 },
+  { code: "+60", flag: "🇲🇾", name: "Malaysia", maxSize: 10 },
+  { code: "+61", flag: "🇦🇺", name: "Australia", maxSize: 10 },
+  { code: "+62", flag: "🇮🇩", name: "Indonesia", maxSize: 10 },
+  { code: "+63", flag: "🇵🇭", name: "Philippines", maxSize: 10 },
+  { code: "+64", flag: "🇳🇿", name: "New Zealand", maxSize: 10 },
+  { code: "+65", flag: "🇸🇬", name: "Singapore", maxSize: 10 },
+  { code: "+66", flag: "🇹🇭", name: "Thailand", maxSize: 10 },
+  { code: "+81", flag: "🇯🇵", name: "Japan", maxSize: 10 },
+  { code: "+82", flag: "🇰🇷", name: "South Korea", maxSize: 10 },
+  { code: "+84", flag: "🇻🇳", name: "Vietnam", maxSize: 10 },
+  { code: "+86", flag: "🇨🇳", name: "China", maxSize: 10 },
+  { code: "+90", flag: "🇹🇷", name: "Turkey", maxSize: 10 },
+  { code: "+91", flag: "🇮🇳", name: "India", maxSize: 10 },
+  { code: "+92", flag: "🇵🇰", name: "Pakistan", maxSize: 10 },
+  { code: "+93", flag: "🇦🇫", name: "Afghanistan", maxSize: 10 },
+  { code: "+94", flag: "🇱🇰", name: "Sri Lanka", maxSize: 10 },
+  { code: "+95", flag: "🇲🇲", name: "Myanmar", maxSize: 10 },
+  { code: "+98", flag: "🇮🇷", name: "Iran", maxSize: 10 },
+  { code: "+211", flag: "🇸🇸", name: "South Sudan", maxSize: 10 },
+  { code: "+212", flag: "🇲🇦", name: "Morocco", maxSize: 10 },
+  { code: "+213", flag: "🇩🇿", name: "Algeria", maxSize: 10 },
+  { code: "+216", flag: "🇹🇳", name: "Tunisia", maxSize: 10 },
+  { code: "+218", flag: "🇱🇾", name: "Libya", maxSize: 10 },
+  { code: "+220", flag: "🇬🇲", name: "Gambia", maxSize: 10 },
+  { code: "+221", flag: "🇸🇳", name: "Senegal", maxSize: 10 },
+  { code: "+222", flag: "🇲🇷", name: "Mauritania", maxSize: 10 },
+  { code: "+223", flag: "🇲🇱", name: "Mali", maxSize: 10 },
+  { code: "+225", flag: "🇨🇮", name: "Ivory Coast", maxSize: 10 },
+  { code: "+230", flag: "🇲🇺", name: "Mauritius", maxSize: 10 },
+  { code: "+233", flag: "🇬🇭", name: "Ghana", maxSize: 10 },
+  { code: "+234", flag: "🇳🇬", name: "Nigeria", maxSize: 10 },
+  { code: "+235", flag: "🇹🇩", name: "Chad", maxSize: 10 },
+  { code: "+237", flag: "🇨🇲", name: "Cameroon", maxSize: 10 },
+  { code: "+240", flag: "🇬🇶", name: "Equatorial Guinea", maxSize: 10 },
+  { code: "+254", flag: "🇰🇪", name: "Kenya", maxSize: 10 },
+  { code: "+255", flag: "🇹🇿", name: "Tanzania", maxSize: 10 },
+  { code: "+256", flag: "🇺🇬", name: "Uganda", maxSize: 10 },
+  { code: "+260", flag: "🇿🇲", name: "Zambia", maxSize: 10 },
+  { code: "+263", flag: "🇿🇼", name: "Zimbabwe", maxSize: 10 },
+  { code: "+268", flag: "🇸🇿", name: "Eswatini", maxSize: 10 },
+  { code: "+290", flag: "🇸🇭", name: "Saint Helena", maxSize: 10 },
+  { code: "+375", flag: "🇧🇾", name: "Belarus", maxSize: 10 },
+  { code: "+420", flag: "🇨🇿", name: "Czech Republic", maxSize: 10 },
+  { code: "+421", flag: "🇸🇰", name: "Slovakia", maxSize: 10 },
+  { code: "+423", flag: "🇱🇮", name: "Liechtenstein", maxSize: 10 },
+  { code: "+500", flag: "🇫🇰", name: "Falkland Islands", maxSize: 10 },
+  { code: "+501", flag: "🇧🇿", name: "Belize", maxSize: 10 },
+  { code: "+502", flag: "🇬🇹", name: "Guatemala", maxSize: 10 },
+  { code: "+503", flag: "🇸🇻", name: "El Salvador", maxSize: 10 },
+  { code: "+504", flag: "🇭🇳", name: "Honduras", maxSize: 10 },
+  { code: "+505", flag: "🇳🇮", name: "Nicaragua", maxSize: 10 },
+  { code: "+506", flag: "🇨🇷", name: "Costa Rica", maxSize: 10 },
+  { code: "+507", flag: "🇵🇦", name: "Panama", maxSize: 10 },
+  { code: "+509", flag: "🇭🇹", name: "Haiti", maxSize: 10 },
+  { code: "+598", flag: "🇺🇾", name: "Uruguay", maxSize: 10 },
 ];
 
 const sizeClasses = {
@@ -128,27 +128,28 @@ const CustomPhoneInput = ({
   rounded = "rounded",
   selectedCountryCode = "+1",
 }) => {
-  
-const validatePhoneNumber=(input,flag='IN')=>{
-  console.log("input",input);
-  console.log("flag",flag);
-  const phoneNumber = parsePhoneNumberFromString(input,flag);
-  if (phoneNumber && phoneNumber.isValid()) {
-    return {
-      valid: true,
-      formatted: phoneNumber.formatInternational(), // e.g., "+91 98765 43210"
-      e164: phoneNumber.number,                     // e.g., "+919876543210"
-      country: phoneNumber.country,
-    };
+
+  const validatePhoneNumber = (input, flag = 'IN') => {
+    const phoneNumber = parsePhoneNumberFromString(input, flag);
+    if (phoneNumber && phoneNumber.isValid()) {
+      setError(false);
+      return {
+        valid: true,
+        formatted: phoneNumber.formatInternational(),
+        e164: phoneNumber.number,
+        country: phoneNumber.country,
+      };
+    }
+    setError(true);
+    return { valid: false, message: 'Invalid phone number' };
   }
-  return { valid: false, message: 'Invalid phone number' };
-}
   const [selectedCountry, setSelectedCountry] = useState(() => {
     const country =
       allCountries.find((c) => c.code === selectedCountryCode) || countries[0];
     return country;
   });
 
+  const [error, setError] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [dropdownMaxHeight, setDropdownMaxHeight] = useState(300);
@@ -194,15 +195,15 @@ const validatePhoneNumber=(input,flag='IN')=>{
       countryCode: country.code,
       number: numberOnly,
       fullNumber: newValue,
-      flag:country.flag, //mahee
-      error:validatePhoneNumber(`${country.code}${numberOnly}`,country.flag)
+      flag: country.flag,
+      error: validatePhoneNumber(`${country.code}${numberOnly}`, country.flag)
     });
 
     setIsOpen(false);
     setSearchQuery("");
   };
 
-  // Ensure value is a string
+
   const phoneValue = String(value || "");
 
   const handlePhoneChange = (e) => {
@@ -210,16 +211,12 @@ const validatePhoneNumber=(input,flag='IN')=>{
     let maxSize = selectedCountry.maxSize || 10;
     const limitedNumber = phoneNumber.slice(0, maxSize);
     const newValue = selectedCountry.code + limitedNumber;
-    // console.log("New phone value:", newValue);
-    // console.log("New phone value:", phoneNumber);
-    // console.log("New phone value:", e);
-    // console.log("New phone value:", e.target.value);
     onChange(newValue, {
       countryCode: selectedCountry.code,
       number: limitedNumber,
       fullNumber: newValue,
-      flag:selectedCountry.flag, //mahee
-       error:validatePhoneNumber(`${selectedCountry.code}${limitedNumber}`,selectedCountry.flag)
+      flag: selectedCountry.flag,
+      error: validatePhoneNumber(`${selectedCountry.code}${limitedNumber}`, selectedCountry.flag)
     });
   };
   const filteredCountries = allCountries.filter((country) => {
@@ -231,7 +228,7 @@ const validatePhoneNumber=(input,flag='IN')=>{
     );
   });
 
-  // Add this useEffect to update selectedCountry when selectedCountryCode changes
+
   useEffect(() => {
     const country =
       allCountries.find((c) => c.code === selectedCountryCode) || countries[0];
@@ -240,9 +237,8 @@ const validatePhoneNumber=(input,flag='IN')=>{
 
   return (
     <div
-      className={`flex-1 relative flex rounded border border-gray-300 hover:border-primary focus:border-primary focus:outline-none ${
-        isFocused ? "border-primary outline-none" : ""
-      } `}
+      className={`flex-1 relative flex rounded border border-gray-300 hover:border-primary focus:border-primary focus:outline-none ${isFocused ? "border-primary outline-none" : ""
+        } `}
     >
       <div className="relative" ref={dropdownRef}>
         <button
@@ -314,8 +310,20 @@ const validatePhoneNumber=(input,flag='IN')=>{
           }
         }}
         placeholder={placeholder}
-        className={`flex-1 bg-white pl-0 border-0 focus:outline-none ${sizeClasses[size]} ${fontSizeClasses[size]} ${rounded} rounded-l-none`}
+        className={`flex-1 bg-white pl-0 border-0 focus:outline-none ${sizeClasses[size]} ${fontSizeClasses[size]} ${rounded} 
+        ${error  
+              ? "border-red-200 bg-red-50 focus:border-red-500" 
+              : "border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+            }
+        rounded-l-none`}
       />
+      {/* Success Icon: Shows when name is valid and entered */}
+        {!error  && (
+          <span className="absolute right-3 text-green-500 material-symbols-rounded !text-[20px] animate-in fade-in zoom-in my-auto py-2">
+            verified
+          </span>
+        )}
+
     </div>
   );
 };

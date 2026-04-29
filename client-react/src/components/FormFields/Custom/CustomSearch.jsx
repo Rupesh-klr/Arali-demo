@@ -1,5 +1,3 @@
-
-
 import React from "react";
 
 const sizeClasses = {
@@ -37,14 +35,6 @@ const CustomSearch = ({
     <div
       className={`flex items-center border border-gray-300 hover:border-primary focus-within:border-primary bg-white ${sizeClasses[size]} ${rounded} relative`}
     >
-      {/* Search Icon */}
-      {/* <span
-        className={`material-icons text-gray-500 px-2 ${iconSizeClasses[size]}`}
-      >
-        search
-      </span> */}
-
-      {/* Input Field */}
       <input
         type="text"
         value={value}
@@ -53,8 +43,6 @@ const CustomSearch = ({
         disabled={disabled}
         className={`w-full outline-none bg-transparent ms-3 px-3 ${fontSizeClasses[size]}`}
       />
-
-      {/* Clear (✖) Button - Shown only when there is a value */}
       <div className="w-7 flex justify-center items-center">
         {value && closeBtn && (
           <span

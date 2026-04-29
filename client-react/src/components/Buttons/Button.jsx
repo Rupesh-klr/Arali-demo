@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 
 const Button = ({
   title,
-  type = "button", // button, link, icon, submit
-  variant = "contained", // contained, outlined, text
-  size = "md", // xs, sm, md, lg
-  color = "primary", // primary, success, danger, warning, info
+  type = "button", 
+  variant = "contained", 
+  size = "md", 
+  color = "primary", 
   icon,
   iconPosition = "before",
   onClick,
@@ -19,7 +19,7 @@ const Button = ({
 }) => {
   const buttonRef = useRef(null);
 
-  // --- STYLING MAPS ---
+  
   const sizeMap = {
     xs: "px-2 py-1 text-[10px]",
     sm: "px-3 py-1.5 text-xs",
@@ -77,7 +77,7 @@ const Button = ({
     </>
   );
 
-  // --- RENDER LOGIC ---
+  
   if (type === "link" && to) return <Link to={to} className={sharedClasses}>{content}</Link>;
   if (type === "link" && href) return <a href={href} target="_blank" rel="noreferrer" className={sharedClasses}>{content}</a>;
 

@@ -1,4 +1,4 @@
-// src/components/Table/CustomerTableTemplate.jsx
+
 import React from 'react';
 import Button from '../Buttons/Button';
 import { Toast } from '..';
@@ -14,23 +14,23 @@ const options = [
 ];
 
 export default function CustomerTableTemplate({ columns, rows, onDelete, onRefreshButtonClicked, search, handleFilter, setSearchValue, searchValue, filteredData = [rows], newLimit = 10, meta, handleRowsPerPageChange }) {
-    //
-    //   const [meta, setMeta] = useState({ totalRecords: 0, totalPages: 1, limit: 10, currentPage: 1 });
+    
+    
     let serverPagination = true;
     const [selectedRows, setSelectedRows] = useState(rows);
-    const [limit, setLimit] = useState(meta.limit); // For Server-side
-    const [showRows, setShowRows] = useState(10); // For Client-side
+    const [limit, setLimit] = useState(meta.limit); 
+    const [showRows, setShowRows] = useState(10); 
     const [currentPage, setCurrentPage] = useState(meta.currentPage);
-    // Calculate indices
+    
     const indexOfLastRecord = currentPage * limit;
     const indexOfFirstRecord = indexOfLastRecord - limit;
 
-    // Slice the data to show only what the user requested
+    
     const currentRows = meta.currentPage;
 
-    // Calculate total pages for your "Next/Prev" buttons
+    
     const totalPages = meta.totalPages;
-    // Optional: Toast feedback for the manager
+    
 
     const FIXED_HEIGHT_CLASS = "h-[630px]";
 
@@ -46,7 +46,7 @@ export default function CustomerTableTemplate({ columns, rows, onDelete, onRefre
         console.log("Sorting by:", prevMeta);
             let nextOrder = null;
 
-            // Cycle logic: Default (null) -> ASC -> DESC -> Default (null)
+            
             if (prevMeta.sortBy !== columnKey) {
                 nextOrder = "asc";
             } else if (prevMeta.sortOrder === "asc") {
@@ -59,11 +59,11 @@ export default function CustomerTableTemplate({ columns, rows, onDelete, onRefre
                 ...prevMeta,
                 sortBy: nextOrder ? columnKey : null,
                 sortOrder: nextOrder,
-                page: 1, // Reset to page 1 on sort
+                page: 1, 
             };
             console.log("New sorting meta:", newMeta);
             return handleRowsPerPageChange(null,null,newMeta.sortBy,newMeta.sortOrder);
-        // });
+        
     };
     return (
         <div className="overflow-x-auto">
@@ -143,7 +143,6 @@ export default function CustomerTableTemplate({ columns, rows, onDelete, onRefre
                     <tbody className="divide-y divide-gray-100 bg-white">
                         {rows.length > 0 ? (
                             rows.map((row) => (
-                                /* 2. Forced row height (h-[52px]) to ensure 10 rows fit perfectly */
                                 <tr key={row.id} className="h-[52px] transition-colors hover:bg-blue-50/50 group">
                                     {columns.map((col) => (
                                         <td key={col.key} className="py-3 px-4 text-sm text-gray-700 whitespace-nowrap">
@@ -168,7 +167,6 @@ export default function CustomerTableTemplate({ columns, rows, onDelete, onRefre
                                 </tr>
                             ))
                         ) : (
-                            /* 3. Filler Row: Prevents the table from collapsing when empty */
                             <tr>
                                 <td colSpan={columns.length + 1} className="h-[520px] text-center text-gray-400">
                                     <div className="flex flex-col items-center justify-center">

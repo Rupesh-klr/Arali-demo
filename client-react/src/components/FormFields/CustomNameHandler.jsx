@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 const CustomNameHandler = ({ 
   value = "", 
   onChange, 
-  name = "name", // The key in your form state
+  name = "name", 
   label = "Full Name", 
   placeholder = "Enter full name",
   disabled = false,
@@ -24,7 +24,7 @@ const CustomNameHandler = ({
     if (text.trim() && text.trim().length < 2) {
       return "Name is too short";
     }
-    // Optional: Prevent numbers in names
+    
     if (/[0-9]/.test(text)) {
       return "Names should not contain numbers";
     }
@@ -35,7 +35,7 @@ const CustomNameHandler = ({
     const text = e.target.value;
     setVal(text);
     
-    // Clear error while typing if it becomes valid
+    
     if (error && !validate(text)) {
       setError("");
     }
@@ -47,7 +47,7 @@ const CustomNameHandler = ({
     setError(validationError);
     
     if (onChange) {
-      // Sending it back in an event-like object so your existing handleChange might work
+      
       onChange({
         target: {
           name: name,

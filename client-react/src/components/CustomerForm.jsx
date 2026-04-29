@@ -33,9 +33,8 @@ export default function CustomerForm({ onCustomerAdded }) {
     const isEmailValid = emailRegex.test(form.email);
     
     const phoneNumber = form.phone || "";
-    console.log(phoneNumber, 'Validating phone number');
     const isPhoneValid = phoneNumber.length >= 9 && phoneNumber.length <= 15;
-console.log({ isNameValid, isEmailValid, isPhoneValid });
+    console.log({ isNameValid, isEmailValid, isPhoneValid });
     return {
       isValid: isNameValid && isEmailValid && isPhoneValid,
       details: { isNameValid, isEmailValid, isPhoneValid }
@@ -46,20 +45,15 @@ console.log({ isNameValid, isEmailValid, isPhoneValid });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submission initiated with data:', form);
     const validation = validateAllFields();
 
     if (!validation.isValid) {
-
-    console.log('Form submission initiated with data:', form);
       setError('Please ensure all fields are correct.');
-      // Update state flags just in case they were missed
+      
       setForm(prev => ({ 
         ...prev, 
         ...validation.details 
       }));
-
-    console.log('Form submission initiated with data:', form);
       Toast.error('Validation failed. Please check your entries.');
       return;
     }
@@ -69,9 +63,7 @@ console.log({ isNameValid, isEmailValid, isPhoneValid });
     try {
       const encrypted = encrypt(form);
       let res = await addCustomer(encrypted);
-      console.log(res?.ok, 'API Response:', res?.id);
       if (res?.ok === false) {
-        console.log('API Response:', res);
         const errorData = await res.json();
         setError(errorData.error || 'Failed to add customer');
         Toast.error(errorData.error || 'Failed to add customer');
@@ -88,7 +80,6 @@ console.log({ isNameValid, isEmailValid, isPhoneValid });
     }
   };
   const handlePhoneChange = (phoneData, obj) => {
-    console.log('Phone change detected:', phoneData, obj);
     setForm((prev) => ({
       ...prev,
       phone: phoneData,
@@ -156,7 +147,7 @@ console.log({ isNameValid, isEmailValid, isPhoneValid });
         title="Save Customer"
         color="success"
         icon="save"
-        size="lg" // Larger button for interest
+        size="lg" 
         loading={loading}
         className="w-full py-4 shadow-lg shadow-green-200 rounded-xl"
       />

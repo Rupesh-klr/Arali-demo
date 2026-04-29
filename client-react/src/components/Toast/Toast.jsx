@@ -2,7 +2,7 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createRoot } from "react-dom/client";
 
-// --- PORTAL SETUP ---
+
 const toastContainer = document.createElement("div");
 toastContainer.id = "global-toast-container";
 document.body.appendChild(toastContainer);
@@ -11,7 +11,7 @@ const root = createRoot(toastContainer);
 let toasts = [];
 let counter = 0;
 
-// --- INTERNAL COMPONENTS ---
+
 const ToastContainer = ({ position = "top-center", children }) => {
   const positionClasses = {
     "top-right": "top-4 right-4 flex flex-col items-end",
@@ -34,7 +34,7 @@ const ToastContainer = ({ position = "top-center", children }) => {
 const Toast = ({ id, message, type, variant, size, duration, showProgress, position, onClose }) => {
   const [progress, setProgress] = React.useState(100);
 
-  // Styling maps
+  
   const variants = {
     contained: {
       success: "bg-green-600 text-white",
@@ -103,7 +103,7 @@ const Toast = ({ id, message, type, variant, size, duration, showProgress, posit
   );
 };
 
-// --- RENDER LOGIC ---
+
 const renderToasts = () => {
   const grouped = toasts.reduce((acc, t) => {
     const pos = t.position || "top-center";
@@ -140,7 +140,7 @@ const showToast = (message, type, duration, variant, options = {}) => {
   renderToasts();
 };
 
-// --- EXPORTED UTILITY ---
+
 export const toast = {
   success: (msg, opt) => showToast(msg, "success", 3000, "outlined", opt),
   error: (msg, opt) => showToast(msg, "error", 5000, "contained", opt),

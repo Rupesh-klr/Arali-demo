@@ -11,7 +11,7 @@ const CustomSelect = ({
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
 
-  // Close dropdown when clicking outside
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -22,7 +22,7 @@ const CustomSelect = ({
     return () => document.body.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Find the label for the currently selected value
+  
   const selectedOption = options.find((opt) => String(opt.value) === String(value));
 
   const sizeStyles = {

@@ -8,10 +8,15 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "Customer-Management",
+    "express-api",
+    "swagger",
+    "socket-io"
+  ],
+  "author": "Rupesh KLR",
   "license": "ISC",
-  "description": "",
+  "description": "Customer management is the strategic practice of nurturing client relationships, maximizing retention, and enhancing profitability through tailored services and effective communication. It involves leveraging CRM tools for data analysis, supporting customer journeys, and resolving issues across sales, marketing, and support departments",
   "dependencies": {
     "framer-motion": "^12.38.0",
     "libphonenumber-js": "^1.12.42",
