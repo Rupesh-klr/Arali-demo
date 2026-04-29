@@ -7,9 +7,33 @@ const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const { Server } = require('socket.io');
-
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'HR Management API',
+      version: '1.0.0',
+      description: 'API documentation for the Customer/Employee Registry',
+      contact: {
+        name: 'Rupesh KLR',
+      },
+    },
+    servers: [
+      {
+        url: `http://localhost:${PORT}`,
+        description: 'Local server',
+      },
+    ],
+  },
+  apis: ['./server.js'],
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
 const originString = process.env.ALLOWED_ORIGIN || 'http://localhost:5173';
 const ALLOWED_ORIGINS = originString.split(',').map(origin => origin.trim());
 console.log(`Allowed Origins: ${ALLOWED_ORIGINS.join(', ')}`);
@@ -51,8 +75,72 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
   socket.emit('connected', { message: 'Socket connected' });
 });
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // GET /customers (with pagination, sorting, and suspicious activity logging)
+
+/**
+ * @swagger
+ * /customers:
+ *   get:
+ *     summary: Retrieve a list of customers
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of records per page
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *         description: Sort by field (name, email, phone)
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *         description: Sort order (asc, desc)
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search term
+ *       - in: query
+ *         name: filterBy
+ *         schema:
+ *           type: string
+ *         description: Filter by field (name, email, phone, global)
+ *     responses:
+ *       200:
+ *         description: A list of customers
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Customer'
+ *                 meta:
+ *                   type: object
+ *                   properties:
+ *                     totalRecords:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     currentPage:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                 message:
+ *                   type: string
+ */
 app.get('/customers', (req, res) => {
   try {
     let { page = 1, limit = 10, sort = 'name', order = 'asc', search = '', filterBy = 'global' } = req.query;
@@ -61,14 +149,12 @@ app.get('/customers', (req, res) => {
     let requestedLimit = parseInt(limit) || 10;
     let warningMessage = null;
 
-    // --- STEP 1: Always start with the FULL customer list ---
-    // This is your "Main Table" (customers array)
+    // --- Always start with the FULL customer list ---
     let filteredResults = [...customers]; 
 
-    // --- STEP 2: Filter the FULL list based on Search ---
+    // --- Filter the FULL list based on Search ---
     if (search) {
       const searchTerm = search.toString().toLowerCase().trim();
-      
       // We filter the original 'customers' array to find EVERY match in the system
       filteredResults = customers.filter(customer => {
         const name = (customer.name || '').toLowerCase();
@@ -83,8 +169,6 @@ app.get('/customers', (req, res) => {
         return name.includes(searchTerm) || email.includes(searchTerm) || phone.includes(searchTerm);
       });
     }
-
-    // --- STEP 3: Sort ONLY the filtered results ---
     if (['name', 'email', 'phone'].includes(sort)) {
       filteredResults.sort((a, b) => {
         const valA = (a[sort] || '').toString().toLowerCase();
@@ -94,16 +178,12 @@ app.get('/customers', (req, res) => {
         return 0;
       });
     }
-
-    // --- STEP 4: Calculate Pagination based on the FILTERED count ---
     const totalRecords = filteredResults.length; // Important: This is the count of matches, not the whole table
     const totalPages = Math.max(1, Math.ceil(totalRecords / requestedLimit));
-
-    // Fix page bounds
     if (requestedPage > totalPages) requestedPage = totalPages;
     if (requestedPage < 1) requestedPage = 1;
 
-    // --- STEP 5: Finally, SLICE the results for the current page ---
+    // ---  Finally, SLICE the results for the current page ---
     const start = (requestedPage - 1) * requestedLimit;
     const pagedData = filteredResults.slice(start, start + requestedLimit);
 
@@ -111,7 +191,7 @@ app.get('/customers', (req, res) => {
     res.status(200).json({ 
       data: pagedData, 
       meta: { 
-        totalRecords, // Matches found
+        totalRecords, 
         totalPages, 
         currentPage: requestedPage, 
         limit: requestedLimit 
@@ -126,21 +206,80 @@ app.get('/customers', (req, res) => {
 });
 
 // POST /customers with Exception Handling
+
+/**
+ * @swagger
+ * /customers:
+ *   post:
+ *     summary: Add a new customer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Customer'
+ *       409:
+ *         description: Conflict (Email or Phone exists)
+ */
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Customer:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         email:
+ *           type: string
+ *         phone:
+ *           type: string
+ */
 app.post('/customers', (req, res) => {
   try {
     const { name, email, phone } = req.body;
     if (!name || !email || !phone) {
       return res.status(400).json({ error: 'Missing fields: name, email, and phone are required.' });
     }
+    // Name validation: at least 2 characters
+    if (typeof name !== 'string' || name.trim().length < 2) {
+      return res.status(400).json({ error: 'Name must be at least 2 characters long.' });
+    }
+    // Email validation: simple regex for format
+    const emailRegex = /^[\w-.]+@[\w-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email.trim())) {
+      return res.status(400).json({ error: 'Invalid email format.' });
+    }
+    // Phone validation: allow only digits, optional +, min 7, max 15 digits
+    const phoneRegex = /^\+?\d{7,15}$/;
+    if (!phoneRegex.test(phone.trim())) {
+      return res.status(400).json({ error: 'Invalid phone number format. Use only digits, optional +, 7-15 digits.' });
+    }
     // . Individual Uniqueness Checks
     const emailExists = customers.some(c => c.email.toLowerCase() === email.toLowerCase().trim());
-    const phoneExists = customers.some(c => c.phone === phone.trim());
     if (emailExists) {
       return res.status(409).json({ error: 'Email already exists. Please use a different email address.' });
     }
-    if (phoneExists) {
-      return res.status(409).json({ error: 'Phone number already exists. Please use a different phone number.' });
-    }
+    // const phoneExists = customers.some(c => c.phone === phone.trim());
+    // if (phoneExists) {
+    //   return res.status(409).json({ error: 'Phone number already exists. Please use a different phone number.' });
+    // }
 
     const id = uuidv4();
     const customer = { 
@@ -168,6 +307,54 @@ app.post('/customers', (req, res) => {
 });
 
 // DELETE /customers/:id
+
+/**
+ * @swagger
+ * /customers/{id}:
+ *   delete:
+ *     summary: Remove a customer by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The unique UUID of the customer
+ *     responses:
+ *       200:
+ *         description: Customer deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 deletedCustomer:
+ *                   $ref: '#/components/schemas/Customer'
+ *       404:
+ *         description: Customer not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ */
 app.delete('/customers/:id', (req, res) => {
   try {
     const { id } = req.params;
